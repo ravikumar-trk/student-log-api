@@ -9,5 +9,7 @@ namespace student_log_api.Interface
         Task<AccountDataModel> GetAccountDetails(int accountID);
         Task<SchoolsDataModel> GetSchoolsByAccountID(int accountID);
         Task<UsersDataModel> GetUsersByAccountID(int accountID);
+        Task<ClassesDataModel> GetClassesData(int accountID, int schoolID, int loginUserID);
+        Task<ServiceResponse> UpsertClasses(UpsertClassesModel obj);
     }
 }

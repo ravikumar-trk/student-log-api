@@ -82,4 +82,49 @@ namespace student_log_api.Models
         public string UpdatedOn { get; set; }
         public string Status { get; set; }
     }
+
+
+    public class GetClassesDataModel
+    {
+        public int accountID { get; set; }
+        public int loginUserID { get; set; }
+    }
+    public class ClassesDataModel : ServiceResponse
+    {
+        public List<ClassesDataModelData> Result { get; set; }
+    }
+    public class ClassesDataModelData
+    {
+        public int ClassID { get; set; }
+        public string ClassName { get; set; }
+        public string ClassCode { get; set; }
+        public int SchoolID { get; set; }
+        public string SchoolName { get; set; }
+        public int AccountID { get; set; }
+        public string AccountName { get; set; }
+        public int ParentID { get; set; }
+        public int ChildID { get; set; }
+        public string CreatedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public string UpdatedBy { get; set; }
+        public string UpdatedOn { get; set; }
+        public string Status { get; set; }
+        public bool TNSClassID { get; set; }
+        public bool IsActive { get; set; }
+    }
+
+    // Models for upserting classes
+    public class UpsertClassItem
+    {
+        public int classID { get; set; }
+        public int accountID { get; set; }
+        public int schoolID { get; set; }
+        public bool isActive { get; set; }
+    }
+
+    public class UpsertClassesModel
+    {
+        public int loginUserID { get; set; }
+        public List<UpsertClassItem> classes { get; set; }
+    }
 }

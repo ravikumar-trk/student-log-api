@@ -190,5 +190,94 @@ namespace student_log_api.Services
             }
             return response;
         }
+
+        public async Task<ClassesDataModel> GetClassesData(int accountID, int schoolID, int loginUserID)
+        {
+            ClassesDataModel response = new();
+            try
+            {
+                // if (accountID == 0 || loginUserID == 0)
+                // {
+                //     response.addWarning("Invalid Data");
+                //     return response;
+                // }
+                var sqlParams = new Dictionary<string, object>
+                {
+                    {"AccountID",accountID},
+                    {"SchoolID",schoolID},
+                    // {"LoginUserID",loginUserID}
+                };
+                DBFactory factory = new DBFactory();
+                IDBUtility DbUtility = factory.getDBUtility();
+                var Result = await DbUtility.GetjsonData(AppSettings.ConnectionString, SQLConstants.GET_CLASSES_LIST, sqlParams);
+                List<ClassesDataModelData> DeserializedResult = JsonConvert.DeserializeObject<List<ClassesDataModelData>>(Result);
+                if (DeserializedResult == null || DeserializedResult.Count == 0)
+                {
+                    response.Message = "No data found.";
+                }
+                else
+                {
+                    response.Message = "Success";
+                }
+                response.Result = DeserializedResult;
+            }
+            catch (SqlException e)
+            {
+                response.addError(e.Message);
+            }
+            catch (ArgumentNullException e)
+            {
+                response.addError(e.Message);
+            }
+            catch (Exception e)
+            {
+                response.addError(e.Message);
+            }
+            return response;
+        }
+
+        public async Task<ServiceResponse> UpsertClasses(UpsertClassesModel items)
+        {
+            ServiceResponse response = new();
+            try
+            {
+                if (items == null || items.loginUserID == 0 || items.classes == null || items.classes.Count == 0)
+                {
+                    response.addWarning("Invalid Data");
+                    return response;
+                }
+
+                var jsonData = JsonConvert.SerializeObject(items);
+                var sqlParams = new Dictionary<string, object>
+                {
+                    {"JsonData", jsonData}
+                };
+                DBFactory factory = new DBFactory();
+                IDBUtility DbUtility = factory.getDBUtility();
+                var Result = await DbUtility.GetjsonData(AppSettings.ConnectionString, SQLConstants.UPSERT_CLASSES_JSON, sqlParams);
+
+                if (string.IsNullOrEmpty(Result))
+                {
+                    response.Message = "Success";
+                }
+                else
+                {
+                    response.Message = Result;
+                }
+            }
+            catch (SqlException e)
+            {
+                response.addError(e.Message);
+            }
+            catch (ArgumentNullException e)
+            {
+                response.addError(e.Message);
+            }
+            catch (Exception e)
+            {
+                response.addError(e.Message);
+            }
+            return response;
+        }
     }
 }
