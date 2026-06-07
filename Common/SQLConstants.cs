@@ -10,6 +10,8 @@
         public static string GET_CLASSES_LIST = "Get_ClassesList";
         public static string UPSERT_CLASSES_JSON = "Upsert_TNS_Classes_JSON";
         public static string INSERT_NEW_TICKET = "Insert_New_Ticket";
+        public static string GET_TICKET_LIST = "Get_TicketsList";
+        public static string GET_TICKET_DETAILS = "Get_TicketDetailsById";
         public static string GET_USER_BY_EMAIL = "Get_UserByEmail";
         public static string CHECK_VALID_USER = "Get_CheckValidUser";
     }

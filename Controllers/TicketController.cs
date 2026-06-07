@@ -64,5 +64,45 @@ namespace student_log_api.Controllers
             }
         }
 
+        // get ticket list
+        [HttpGet("tickets")]
+        [SwaggerOperation("Get list of tickets", OperationId = "GetTickets", Summary = "Get a list of all tickets", Description = "Retrieves a list of all tickets")]
+        [SwaggerResponse(statusCode: 200, type: typeof(TicketDataModel), description: "List of tickets retrieved successfully")]
+        public async Task<IActionResult> GetTickets([FromQuery][Required] int accountID, [FromQuery][Required] string schoolIDs)
+        {
+            TicketDataModel response = await _ticketInterface.GetTicketList(accountID, schoolIDs);
+
+            if (response != null)
+            {
+                if (!response.HasWarnings && !response.HasErrors)
+                {
+                    return Ok(response);
+                }
+                else if (response.HasWarnings)
+                {
+                    return StatusCode(StatusCodes.Status202Accepted, response);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, response);
+                }
+            }
+            else
+            {
+                return BadRequest(response);
+            }
+        }
+
+        // Get Ticket details by ticket id - can be used in future for ticket details page
+        [HttpGet("{ticketID}/ticket-details")]
+        [SwaggerOperation("Get ticket details", OperationId = "GetTicketDetails", Summary = "Get details of a specific ticket", Description = "Retrieves details of a specific ticket based on the provided ticket ID")]
+        [SwaggerResponse(statusCode: 200, type: typeof(TicketDetailsDataModel), description: "Ticket details retrieved successfully")]
+        public async Task<IActionResult> GetTicketDetails([FromRoute][Required] int ticketID)
+        {
+            // This method can be implemented in future to get ticket details by ticket id
+            TicketDetailsDataModel response = await _ticketInterface.GetTicketDetails(ticketID);
+            return Ok(response);
+        }
+
     }
 }

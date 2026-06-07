@@ -128,5 +128,90 @@ namespace student_log_api.Services
             }
             return response;
         }
+
+        public async Task<TicketDataModel> GetTicketList(int accountID, string schoolIDs)
+        {
+            TicketDataModel response = new();
+            try
+            {
+                var sqlParams = new Dictionary<string, object>
+                {
+                    {"AccountID",accountID},
+                    {"SchoolIDs",schoolIDs}
+                };
+                DBFactory factory = new DBFactory();
+                IDBUtility DbUtility = factory.getDBUtility();
+                var Result = await DbUtility.GetjsonData(AppSettings.ConnectionString, SQLConstants.GET_TICKET_LIST, sqlParams);
+
+                if (string.IsNullOrEmpty(Result))
+                {
+                    response.Message = "No tickets found.";
+                    return response;
+                }
+                List<TicketData> DeserializedResult = JsonConvert.DeserializeObject<List<TicketData>>(Result);
+                if (DeserializedResult == null || DeserializedResult.Count == 0)
+                {
+                    response.Message = "No tickets found.";
+                    return response;
+                }
+                response.Result = DeserializedResult;
+                response.Message = "Tickets retrieved successfully.";
+            }
+            catch (SqlException e)
+            {
+                response.addError(e.Message);
+            }
+            catch (ArgumentNullException e)
+            {
+                response.addError(e.Message);
+            }
+            catch (Exception e)
+            {
+                response.addError(e.Message);
+            }
+            return response;
+        }
+
+        public async Task<TicketDetailsDataModel> GetTicketDetails(int ticketID)
+        {
+            TicketDetailsDataModel response = new();
+            try
+            {
+                var sqlParams = new Dictionary<string, object>
+                {
+                    {"TicketID",ticketID}
+                };
+                DBFactory factory = new DBFactory();
+                IDBUtility DbUtility = factory.getDBUtility();
+                var Result = await DbUtility.GetjsonData(AppSettings.ConnectionString, SQLConstants.GET_TICKET_DETAILS, sqlParams);
+
+                if (string.IsNullOrEmpty(Result))
+                {
+                    response.Message = "No details found for the specified ticket.";
+                    return response;
+                }
+                List<TicketDetailsData> DeserializedResult = JsonConvert.DeserializeObject<List<TicketDetailsData>>(Result);
+                if (DeserializedResult == null || DeserializedResult.Count == 0)
+                {
+                    response.Message = "No details found for the specified ticket.";
+                    return response;
+                }
+                response.Result = DeserializedResult;
+                response.Message = "Ticket details retrieved successfully.";
+            }
+            catch (SqlException e)
+            {
+                response.addError(e.Message);
+            }
+            catch (ArgumentNullException e)
+            {
+                response.addError(e.Message);
+            }
+            catch (Exception e)
+            {
+                response.addError(e.Message);
+            }
+            return response;
+        }
     }
 }

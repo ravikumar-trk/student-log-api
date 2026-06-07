@@ -7,5 +7,7 @@ namespace student_log_api.Interface
     public interface ITicketInterface
     {
         Task<ServiceResponse> CreateTicket(CreateTicketPayloadV2 model);
+        Task<TicketDataModel> GetTicketList(int accountID, string schoolID);
+        Task<TicketDetailsDataModel> GetTicketDetails(int ticketID);
     }
 }
