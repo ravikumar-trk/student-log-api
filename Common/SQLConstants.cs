@@ -14,5 +14,6 @@
         public static string GET_TICKET_DETAILS = "Get_TicketDetailsById";
         public static string GET_USER_BY_EMAIL = "Get_UserByEmail";
         public static string CHECK_VALID_USER = "Get_CheckValidUser";
+        public static string ASSIGN_TICKETS_TO_USER = "Upsert_Assign_TicketsToUser";
     }
 }

@@ -153,11 +153,11 @@ namespace student_log_api.Services
             UsersDataModel response = new();
             try
             {
-                if (accountID == 0)
-                {
-                    response.addWarning("Invalid Data");
-                    return response;
-                }
+                // if (accountID == 0)
+                // {
+                //     response.addWarning("Invalid Data");
+                //     return response;
+                // }
                 var sqlParams = new Dictionary<string, object>
                 {
                     {"AccountID",accountID}

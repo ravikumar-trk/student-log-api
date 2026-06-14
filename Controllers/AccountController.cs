@@ -8,12 +8,14 @@ using student_log_api.Interface;
 using student_log_api.Models;
 using student_log_api.Services;
 using Microsoft.Data.SqlClient;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace student_log_api.Controllers
 {
     [Route("api/account")]
     [ApiController]
-    // [Authorize]
+    [Authorize]
     public class AccountController : ControllerBase
     {
         IAccountInterface _accountInterface;
@@ -28,6 +30,18 @@ namespace student_log_api.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(AccountDataModel), description: "Get data from boady and send result as array")]
         public async Task<IActionResult> GetAccountList([FromBody] GetAccountDataModel obj)
         {
+            if (!UserContext.ValidateUser(
+            User,
+            out int loginUserID,
+            out int loginAccountID,
+            out string message))
+            {
+                return BadRequest(new
+                {
+                    Message = message,
+                    StatusCode = 400
+                });
+            }
             AccountDataModel response = await _accountInterface.GetAccountList(obj);
             if (response != null)
             {
@@ -55,6 +69,18 @@ namespace student_log_api.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(AccountDataModel), description: "Get data from boady and send result as array")]
         public async Task<IActionResult> GetAccountDetails([FromRoute][Required] int accountID)
         {
+            if (!UserContext.ValidateUser(
+            User,
+            out int loginUserID,
+            out int loginAccountID,
+            out string message))
+            {
+                return BadRequest(new
+                {
+                    Message = message,
+                    StatusCode = 400
+                });
+            }
             AccountDataModel response = await _accountInterface.GetAccountDetails(accountID);
             if (response != null)
             {
@@ -101,6 +127,18 @@ namespace student_log_api.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(SchoolsDataModel), description: "Get data from boady and send result as array")]
         public async Task<IActionResult> GetSchoolsByAccountID([FromRoute][Required] int accountID)
         {
+            if (!UserContext.ValidateUser(
+            User,
+            out int loginUserID,
+            out int loginAccountID,
+            out string message))
+            {
+                return BadRequest(new
+                {
+                    Message = message,
+                    StatusCode = 400
+                });
+            }
             SchoolsDataModel response = await _accountInterface.GetSchoolsByAccountID(accountID);
             if (response != null)
             {
@@ -146,6 +184,19 @@ namespace student_log_api.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(UsersDataModel), description: "Get data from boady and send result as array")]
         public async Task<IActionResult> GetUsersByAccountID([FromRoute][Required] int accountID)
         {
+            if (!UserContext.ValidateUser(
+            User,
+            out int loginUserID,
+            out int loginAccountID,
+            out string message))
+            {
+                return BadRequest(new
+                {
+                    Message = message,
+                    StatusCode = 400
+                });
+            }
+
             UsersDataModel response = await _accountInterface.GetUsersByAccountID(accountID);
             if (response != null)
             {
@@ -192,6 +243,18 @@ namespace student_log_api.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(ClassesDataModel), description: "Classes data fetched successfully")]
         public async Task<IActionResult> GetClassesData([FromRoute] int accountID, [FromRoute] int schoolID, [FromQuery] int loginUserID)
         {
+            // if (!UserContext.ValidateUser(
+            // User,
+            // out int loginUserID,
+            // out int loginAccountID,
+            // out string message))
+            // {
+            //     return BadRequest(new
+            //     {
+            //         Message = message,
+            //         StatusCode = 400
+            //     });
+            // }
             ClassesDataModel response = await _accountInterface.GetClassesData(accountID, schoolID, loginUserID);
 
             if (response != null)
@@ -240,6 +303,18 @@ namespace student_log_api.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(ServiceResponse), description: "Upsert result")]
         public async Task<IActionResult> UpsertClasses([FromBody] UpsertClassesModel obj)
         {
+            if (!UserContext.ValidateUser(
+            User,
+            out int loginUserID,
+            out int loginAccountID,
+            out string message))
+            {
+                return BadRequest(new
+                {
+                    Message = message,
+                    StatusCode = 400
+                });
+            }
             ServiceResponse response = await _accountInterface.UpsertClasses(obj);
             if (response != null)
             {

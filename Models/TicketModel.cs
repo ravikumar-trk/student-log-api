@@ -99,4 +99,16 @@ namespace student_log_api.Models
     {
         public List<TicketDetailsData> Result { get; set; }
     }
+
+    public class AssignTicketPayload
+    {
+        public string TicketIDs { get; set; } = string.Empty; // Comma-separated list of ticket IDs
+        public int AssignedTo { get; set; }
+    }
+
+    public class AssignTicketResponse
+    {
+        public int Type { get; set; }
+        public string Message { get; set; } = string.Empty;
+    }
 }

@@ -213,5 +213,72 @@ namespace student_log_api.Services
             }
             return response;
         }
+
+        public async Task<ServiceResponse> AssignTicketsToUser(AssignTicketPayload payload, int updatedBy)
+        {
+            ServiceResponse response = new();
+            try
+            {
+                if (payload == null)
+                {
+                    response.addWarning("Request data is missing.");
+                    return response;
+                }
+
+                var validations = new List<(bool Condition, string Message)>
+                {
+                    (string.IsNullOrEmpty(payload?.TicketIDs), "TicketIDs are required."),
+                    (payload?.AssignedTo <= 0, "Valid AssignedTo user ID is required.")
+                };
+
+                foreach (var validation in validations)
+                {
+                    if (validation.Condition)
+                    {
+                        response.addWarning(validation.Message);
+                    }
+                }
+
+                if (response.HasWarnings)
+                {
+                    return response;
+                }
+                var sqlParams = new Dictionary<string, object>
+                {
+                    {"TicketIDs",payload.TicketIDs},
+                    {"AssignedTo",payload.AssignedTo},
+                    {"UpdatedBy",updatedBy}
+                };
+                DBFactory factory = new DBFactory();
+                IDBUtility DbUtility = factory.getDBUtility();
+                var Result = await DbUtility.GetjsonData(AppSettings.ConnectionString, SQLConstants.ASSIGN_TICKETS_TO_USER, sqlParams);
+
+                if (string.IsNullOrEmpty(Result))
+                {
+                    response.Message = "No tickets were assigned.";
+                    return response;
+                }
+                List<AssignTicketResponse> DeserializedResult = JsonConvert.DeserializeObject<List<AssignTicketResponse>>(Result);
+                if (DeserializedResult == null || DeserializedResult[0].Type != 1)
+                {
+                    response.addError(DeserializedResult?.FirstOrDefault()?.Message);
+                    return response;
+                }
+                response.Message = DeserializedResult[0].Message;
+            }
+            catch (SqlException e)
+            {
+                response.addError(e.Message);
+            }
+            catch (ArgumentNullException e)
+            {
+                response.addError(e.Message);
+            }
+            catch (Exception e)
+            {
+                response.addError(e.Message);
+            }
+            return response;
+        }
     }
 }

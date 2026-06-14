@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Swashbuckle.AspNetCore.Annotations;
 using student_log_api.Interface;
 using student_log_api.Models;
+using student_log_api.Common;
 
 namespace student_log_api.Controllers
 {
@@ -23,6 +24,18 @@ namespace student_log_api.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(StudentDataModel), description: "Get data from query parameters and return result as array")]
         public async Task<IActionResult> GetStudentsList([FromQuery] GetStudentDataModel obj)
         {
+            if (!UserContext.ValidateUser(
+            User,
+            out int loginUserID,
+            out int loginAccountID,
+            out string message))
+            {
+                return BadRequest(new
+                {
+                    Message = message,
+                    StatusCode = 400
+                });
+            }
             StudentDataModel response = await _studentInterface.GetStudentsList(obj);
             if (response != null)
             {

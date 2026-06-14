@@ -26,9 +26,18 @@ namespace student_log_api.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(ServiceResponse), description: "Ticket created successfully")]
         public async Task<IActionResult> CreateTicket([FromForm] CreateTicketPayload model)
         {
-            // CreatedBy 
-            // CreatedOn
-            // AccountID
+            if (!UserContext.ValidateUser(
+            User,
+            out int loginUserID,
+            out int loginAccountID,
+            out string message))
+            {
+                return BadRequest(new
+                {
+                    Message = message,
+                    StatusCode = 400
+                });
+            }
             CreateTicketPayloadV2 payloadV2 = new()
             {
                 IssueType = model.IssueType,
@@ -70,6 +79,18 @@ namespace student_log_api.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(TicketDataModel), description: "List of tickets retrieved successfully")]
         public async Task<IActionResult> GetTickets([FromQuery][Required] int accountID, [FromQuery][Required] string schoolIDs)
         {
+            if (!UserContext.ValidateUser(
+            User,
+            out int loginUserID,
+            out int loginAccountID,
+            out string message))
+            {
+                return BadRequest(new
+                {
+                    Message = message,
+                    StatusCode = 400
+                });
+            }
             TicketDataModel response = await _ticketInterface.GetTicketList(accountID, schoolIDs);
 
             if (response != null)
@@ -99,9 +120,80 @@ namespace student_log_api.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(TicketDetailsDataModel), description: "Ticket details retrieved successfully")]
         public async Task<IActionResult> GetTicketDetails([FromRoute][Required] int ticketID)
         {
+            if (!UserContext.ValidateUser(
+            User,
+            out int loginUserID,
+            out int loginAccountID,
+            out string message))
+            {
+                return BadRequest(new
+                {
+                    Message = message,
+                    StatusCode = 400
+                });
+            }
             // This method can be implemented in future to get ticket details by ticket id
             TicketDetailsDataModel response = await _ticketInterface.GetTicketDetails(ticketID);
-            return Ok(response);
+            if (response != null)
+            {
+                if (!response.HasWarnings && !response.HasErrors)
+                {
+                    return Ok(response);
+                }
+                else if (response.HasWarnings)
+                {
+                    return StatusCode(StatusCodes.Status202Accepted, response);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, response);
+                }
+            }
+            else
+            {
+                return BadRequest(response);
+            }
+        }
+
+        [HttpPost("assign-ticket")]
+        [SwaggerOperation("Assign ticket to user", OperationId = "AssignTicketToUser", Summary = "Assign a ticket to a user", Description = "Assigns a specific ticket to a user based on the provided ticket ID and user ID")]
+        [SwaggerResponse(statusCode: 200, type: typeof(ServiceResponse), description: "Ticket assigned to user successfully")]
+        public async Task<IActionResult> AssignTicketsToUser([FromBody] AssignTicketPayload payload)
+        {
+            if (!UserContext.ValidateUser(
+            User,
+            out int loginUserID,
+            out int loginAccountID,
+            out string message))
+            {
+                return BadRequest(new
+                {
+                    Message = message,
+                    StatusCode = 400
+                });
+            }
+            int updatedBy = 1; // This should ideally come from the authenticated user context
+            // This method can be implemented in future to assign ticket to a user
+            ServiceResponse response = await _ticketInterface.AssignTicketsToUser(payload, updatedBy);
+            if (response != null)
+            {
+                if (!response.HasWarnings && !response.HasErrors)
+                {
+                    return Ok(response);
+                }
+                else if (response.HasWarnings)
+                {
+                    return StatusCode(StatusCodes.Status202Accepted, response);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, response);
+                }
+            }
+            else
+            {
+                return BadRequest(response);
+            }
         }
 
     }
