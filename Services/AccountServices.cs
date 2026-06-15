@@ -105,7 +105,7 @@ namespace student_log_api.Services
             return response;
         }
 
-        public async Task<SchoolsDataModel> GetSchoolsByAccountID(int accountID)
+        public async Task<SchoolsDataModel> GetSchoolsByAccountID(int accountID, int IsActive)
         {
             SchoolsDataModel response = new();
             try
@@ -117,7 +117,8 @@ namespace student_log_api.Services
                 }
                 var sqlParams = new Dictionary<string, object>
                 {
-                    {"AccountID",accountID}
+                    {"AccountID",accountID},
+                    {"IsActive",IsActive}
                 };
                 DBFactory factory = new DBFactory();
                 IDBUtility DbUtility = factory.getDBUtility();
@@ -148,7 +149,7 @@ namespace student_log_api.Services
             return response;
         }
 
-        public async Task<UsersDataModel> GetUsersByAccountID(int accountID)
+        public async Task<UsersDataModel> GetUsersByAccountID(int accountID, int IsActive)
         {
             UsersDataModel response = new();
             try
@@ -160,7 +161,8 @@ namespace student_log_api.Services
                 // }
                 var sqlParams = new Dictionary<string, object>
                 {
-                    {"AccountID",accountID}
+                    {"AccountID",accountID},
+                    {"IsActive",IsActive}
                 };
                 DBFactory factory = new DBFactory();
                 IDBUtility DbUtility = factory.getDBUtility();
@@ -264,6 +266,200 @@ namespace student_log_api.Services
                 {
                     response.Message = Result;
                 }
+            }
+            catch (SqlException e)
+            {
+                response.addError(e.Message);
+            }
+            catch (ArgumentNullException e)
+            {
+                response.addError(e.Message);
+            }
+            catch (Exception e)
+            {
+                response.addError(e.Message);
+            }
+            return response;
+        }
+
+        public async Task<ServiceResponse> AddSchool(AddSchoolModelPayload school, int loginAccountID, int loginUserID)
+        {
+            ServiceResponse response = new();
+            try
+            {
+                if (school == null || string.IsNullOrEmpty(school.SchoolName) || string.IsNullOrEmpty(school.SchoolCode) || loginAccountID == 0 || loginUserID == 0)
+                {
+                    response.addWarning("Invalid Data");
+                    return response;
+                }
+
+                var sqlParams = new Dictionary<string, object>
+                {
+                    {"SchoolID", 0}, // Assuming SchoolID is auto-generated in the database
+                    {"SchoolName", school.SchoolName},
+                    {"SchoolCode", school.SchoolCode},
+                    {"City", school.City},
+                    {"AccountID", loginAccountID},
+                    {"LoginUserID", loginUserID},
+                    {"IsActive", school.Status == "Active" ? 1 :0} // Assuming new schools are active by default
+                };
+                DBFactory factory = new DBFactory();
+                IDBUtility DbUtility = factory.getDBUtility();
+                var Result = await DbUtility.GetjsonData(AppSettings.ConnectionString, SQLConstants.UPSERT_SCHOOL, sqlParams);
+
+                List<CommonAPIResponse> DeserializedResult = JsonConvert.DeserializeObject<List<CommonAPIResponse>>(Result);
+                if (DeserializedResult == null || DeserializedResult[0].Type != 1)
+                {
+                    response.addWarning(DeserializedResult?.FirstOrDefault()?.Message);
+                    return response;
+                }
+                response.Message = DeserializedResult[0].Message;
+            }
+            catch (SqlException e)
+            {
+                response.addError(e.Message);
+            }
+            catch (ArgumentNullException e)
+            {
+                response.addError(e.Message);
+            }
+            catch (Exception e)
+            {
+                response.addError(e.Message);
+            }
+            return response;
+        }
+
+        public async Task<ServiceResponse> UpdateSchool(UpdateSchoolModelPayload school, int loginAccountID, int loginUserID)
+        {
+            ServiceResponse response = new();
+            try
+            {
+                if (school == null || string.IsNullOrEmpty(school.SchoolName) || string.IsNullOrEmpty(school.SchoolCode) || loginAccountID == 0 || loginUserID == 0)
+                {
+                    response.addWarning("Invalid Data");
+                    return response;
+                }
+
+                var sqlParams = new Dictionary<string, object>
+                {
+                    {"SchoolID", school.SchoolID}, // Assuming SchoolID is auto-generated in the database
+                    {"SchoolName", school.SchoolName},
+                    {"SchoolCode", school.SchoolCode},
+                    {"City", school.City},
+                    {"AccountID", loginAccountID},
+                    {"LoginUserID", loginUserID},
+                    {"IsActive", school.Status == "Active" ? 1 :0}
+                };
+                DBFactory factory = new DBFactory();
+                IDBUtility DbUtility = factory.getDBUtility();
+                var Result = await DbUtility.GetjsonData(AppSettings.ConnectionString, SQLConstants.UPSERT_SCHOOL, sqlParams);
+
+                List<CommonAPIResponse> DeserializedResult = JsonConvert.DeserializeObject<List<CommonAPIResponse>>(Result);
+                if (DeserializedResult == null || DeserializedResult[0].Type != 1)
+                {
+                    response.addWarning(DeserializedResult?.FirstOrDefault()?.Message);
+                    return response;
+                }
+                response.Message = DeserializedResult[0].Message;
+            }
+            catch (SqlException e)
+            {
+                response.addError(e.Message);
+            }
+            catch (ArgumentNullException e)
+            {
+                response.addError(e.Message);
+            }
+            catch (Exception e)
+            {
+                response.addError(e.Message);
+            }
+            return response;
+        }
+
+        public async Task<ServiceResponse> AddUser(AddUserModelPayload user, int loginAccountID, int loginUserID)
+        {
+            ServiceResponse response = new();
+            try
+            {
+                if (user == null || string.IsNullOrEmpty(user.UserName) || string.IsNullOrEmpty(user.Email) || loginAccountID == 0 || loginUserID == 0)
+                {
+                    response.addWarning("Invalid Data");
+                    return response;
+                }
+
+                var sqlParams = new Dictionary<string, object>
+                {
+                    {"UserID", 0}, // Assuming UserID is auto-generated in the database
+                    {"UserName", user.UserName},
+                    {"Email", user.Email},
+                    {"SchoolIDs", user.SchoolIDs},
+                    {"SchoolNames", user.SchoolNames},
+                    {"AccountID", loginAccountID},
+                    {"LoginUserID", loginUserID},
+                    {"IsActive", user.Status == "Active" ? 1 :0} // Assuming new users are active by default
+                };
+                DBFactory factory = new DBFactory();
+                IDBUtility DbUtility = factory.getDBUtility();
+                var Result = await DbUtility.GetjsonData(AppSettings.ConnectionString, SQLConstants.UPSERT_USER, sqlParams);
+
+                List<CommonAPIResponse> DeserializedResult = JsonConvert.DeserializeObject<List<CommonAPIResponse>>(Result);
+                if (DeserializedResult == null || DeserializedResult[0].Type != 1)
+                {
+                    response.addWarning(DeserializedResult?.FirstOrDefault()?.Message);
+                    return response;
+                }
+                response.Message = DeserializedResult[0].Message;
+            }
+            catch (SqlException e)
+            {
+                response.addError(e.Message);
+            }
+            catch (ArgumentNullException e)
+            {
+                response.addError(e.Message);
+            }
+            catch (Exception e)
+            {
+                response.addError(e.Message);
+            }
+            return response;
+        }
+
+        public async Task<ServiceResponse> UpdateUser(UpdateUserModelPayload user, int loginAccountID, int loginUserID)
+        {
+            ServiceResponse response = new();
+            try
+            {
+                if (user == null || string.IsNullOrEmpty(user.UserName) || string.IsNullOrEmpty(user.Email) || loginAccountID == 0 || loginUserID == 0)
+                {
+                    response.addWarning("Invalid Data");
+                    return response;
+                }
+
+                var sqlParams = new Dictionary<string, object>
+                {
+                    {"UserID", user.UserID}, // Assuming UserID is auto-generated in the database
+                    {"UserName", user.UserName},
+                    {"Email", user.Email},
+                    {"SchoolIDs", user.SchoolIDs},
+                    {"SchoolNames", user.SchoolNames},
+                    {"AccountID", loginAccountID},
+                    {"LoginUserID", loginUserID},
+                    {"IsActive", user.Status == "Active" ? 1 :0}
+                };
+                DBFactory factory = new DBFactory();
+                IDBUtility DbUtility = factory.getDBUtility();
+                var Result = await DbUtility.GetjsonData(AppSettings.ConnectionString, SQLConstants.UPSERT_USER, sqlParams);
+
+                List<CommonAPIResponse> DeserializedResult = JsonConvert.DeserializeObject<List<CommonAPIResponse>>(Result);
+                if (DeserializedResult == null || DeserializedResult[0].Type != 1)
+                {
+                    response.addWarning(DeserializedResult?.FirstOrDefault()?.Message);
+                    return response;
+                }
+                response.Message = DeserializedResult[0].Message;
             }
             catch (SqlException e)
             {

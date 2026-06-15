@@ -258,7 +258,7 @@ namespace student_log_api.Services
                     response.Message = "No tickets were assigned.";
                     return response;
                 }
-                List<AssignTicketResponse> DeserializedResult = JsonConvert.DeserializeObject<List<AssignTicketResponse>>(Result);
+                List<CommonAPIResponse> DeserializedResult = JsonConvert.DeserializeObject<List<CommonAPIResponse>>(Result);
                 if (DeserializedResult == null || DeserializedResult[0].Type != 1)
                 {
                     response.addError(DeserializedResult?.FirstOrDefault()?.Message);

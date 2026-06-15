@@ -127,4 +127,46 @@ namespace student_log_api.Models
         public int loginUserID { get; set; }
         public List<UpsertClassItem> classes { get; set; }
     }
+
+    public class AddSchoolModelPayload
+    {
+        public string SchoolName { get; set; } = string.Empty;
+        public string SchoolCode { get; set; } = string.Empty;
+        public string City { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+    }
+
+    public class UpdateSchoolModelPayload
+    {
+        public int SchoolID { get; set; }
+        public string SchoolName { get; set; } = string.Empty;
+        public string SchoolCode { get; set; } = string.Empty;
+        public string City { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+    }
+
+    public class AddUserModelPayload
+    {
+        public string UserName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string SchoolIDs { get; set; } = string.Empty;
+        public string SchoolNames { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+    }
+
+    public class UpdateUserModelPayload
+    {
+        public int UserID { get; set; }
+        public string UserName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string SchoolIDs { get; set; } = string.Empty;
+        public string SchoolNames { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+    }
+
+    public class CommonAPIResponse
+    {
+        public int Type { get; set; }
+        public string Message { get; set; } = string.Empty;
+    }
 }
