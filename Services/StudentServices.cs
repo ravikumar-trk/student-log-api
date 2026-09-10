@@ -65,5 +65,69 @@ namespace student_log_api.Services
             }
             return response;
         }
+
+        public async Task<UpsertStudentsResponse> UpsertStudents(UpsertStudentsModel items, int loginUserID, int loginAccountID)
+        {
+            UpsertStudentsResponse response = new();
+            try
+            {
+                if (items == null || items.Students == null || items.Students.Count == 0)
+                {
+                    response.addWarning("Invalid Data");
+                    return response;
+                }
+
+                var studentsJson = JsonConvert.SerializeObject(items.Students.Select(student => new
+                {
+                    StudentID = student.StudentID == 0 ? null : student.StudentID,
+                    FirstName = student.FirstName ?? student.StudentName,
+                    MiddleName = student.MiddleName,
+                    LastName = student.LastName,
+                    AccountID = loginAccountID,
+                    SchoolCode = student.SchoolCode ?? student.School,
+                    ClassCode = student.ClassCode ?? student.Class,
+                    SectionID = student.SectionID,
+                    AdmissionNo = student.AdmissionNo,
+                    RollNo = student.RollNo,
+                    Gender = student.Gender,
+                    DOB = student.DOB ?? DateTime.Now.ToString("dd-MM-yyyy"),
+                    FatherName = student.FatherName ?? "",
+                    MotherName = student.MotherName,
+                    Contact1 = student.Contact1 ?? "",
+                    Contact2 = student.Contact2,
+                    AddressLine1 = student.AddressLine1 ?? "",
+                    AddressLine2 = student.AddressLine2 ?? "",
+                    City = student.City ?? "",
+                    State = student.State ?? "",
+                    IsActive = true,
+                    UserID = loginUserID
+                }));
+                var sqlParams = new Dictionary<string, object>
+                {
+                    {"StudentsJson", studentsJson}
+                };
+                DBFactory factory = new DBFactory();
+                IDBUtility DbUtility = factory.getDBUtility();
+                var result = await DbUtility.GetjsonData(AppSettings.ConnectionString, SQLConstants.UPSERT_STUDENTS_JSON, sqlParams);
+
+                response.Result = string.IsNullOrWhiteSpace(result)
+                    ? new List<UpsertStudentResult>()
+                    : JsonConvert.DeserializeObject<List<UpsertStudentResult>>(result) ?? new List<UpsertStudentResult>();
+                response.Message = response.Result.Count == 0 ? "Success" : "Students processed.";
+            }
+            catch (SqlException e)
+            {
+                response.addError(e.Message);
+            }
+            catch (ArgumentNullException e)
+            {
+                response.addError(e.Message);
+            }
+            catch (Exception e)
+            {
+                response.addError(e.Message);
+            }
+            return response;
+        }
     }
 }

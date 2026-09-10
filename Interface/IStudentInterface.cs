@@ -6,5 +6,6 @@ namespace student_log_api.Interface
     public interface IStudentInterface
     {
         Task<StudentDataModel> GetStudentsList(GetStudentDataModel obj);
+        Task<UpsertStudentsResponse> UpsertStudents(UpsertStudentsModel obj, int loginUserID, int loginAccountID);
     }
 }

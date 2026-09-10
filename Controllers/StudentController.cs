@@ -57,5 +57,43 @@ namespace student_log_api.Controllers
                 return BadRequest(response);
             }
         }
+
+        [HttpPost("upsert-students")]
+        [SwaggerOperation("Upsert students", OperationId = "UpsertStudents", Summary = "Upsert students using a JSON payload", Description = "Upsert students using a JSON payload that includes loginUserID and a students array")]
+        [SwaggerResponse(statusCode: 200, type: typeof(UpsertStudentsResponse), description: "Students upserted successfully")]
+        public async Task<IActionResult> UpsertStudents([FromBody] UpsertStudentsModel obj)
+        {
+            if (!UserContext.ValidateUser(
+            User,
+            out int loginUserID,
+            out int loginAccountID,
+            out string message))
+            {
+                return BadRequest(new
+                {
+                    Message = message,
+                    StatusCode = 400
+                });
+            }
+
+            UpsertStudentsResponse response = await _studentInterface.UpsertStudents(obj, loginUserID, loginAccountID);
+            if (response != null)
+            {
+                if (!response.HasWarnings && !response.HasErrors)
+                {
+                    return Ok(response);
+                }
+                else if (response.HasWarnings)
+                {
+                    return StatusCode(StatusCodes.Status202Accepted, response);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, response);
+                }
+            }
+
+            return BadRequest(response);
+        }
     }
 }
