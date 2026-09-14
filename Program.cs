@@ -70,6 +70,7 @@ builder.Services.AddSingleton<IGoogleDriveRepository, Repository>();
 builder.Services.AddSingleton<ITicketInterface, TicketServices>();
 builder.Services.AddSingleton<IDailyWorkInterface, DailyWorkServices>();
 builder.Services.AddSingleton<IConfigurationsInterface, ConfigurationsServices>();
+builder.Services.AddSingleton<IStudentGateInterface, StudentGateServices>();
 builder.Services.AddSingleton<IJwtTokenService>(sp => new JwtTokenService(appSettings!));
 
 // Swagger

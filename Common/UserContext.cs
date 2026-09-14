@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Linq;
 
 namespace student_log_api.Common
 {
@@ -33,6 +34,15 @@ namespace student_log_api.Common
             }
 
             return true;
+        }
+
+        public static bool HasSchoolAccess(ClaimsPrincipal user, int schoolID)
+        {
+            var schoolIDs = user.FindFirst("SchoolIDs")?.Value;
+            if (schoolID <= 0 || string.IsNullOrWhiteSpace(schoolIDs)) return false;
+            return schoolIDs.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(value => int.TryParse(value.Trim(), out var id) ? id : 0)
+                .Contains(schoolID);
         }
     }
 }

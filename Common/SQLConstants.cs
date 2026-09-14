@@ -36,5 +36,12 @@
         public static string GET_TEACHER_DAILY_WORK = "Get_TeacherDailyWork";
         public static string GET_STUDENT_DAILY_WORK = "Get_StudentDailyWork";
         public static string GET_DAILY_WORK_DETAILS = "Get_DailyWorkDetails";
+
+        // Student gate attendance
+        public static string RECORD_STUDENT_GATE_SWIPE = "Record_StudentGateSwipe";
+        public static string RECORD_MANUAL_STUDENT_GATE_SWIPE = "Record_ManualStudentGateSwipe";
+        public static string GET_STUDENT_GATE_DASHBOARD = "Get_StudentGateDashboard";
+        public static string GET_STUDENT_GATE_LIVE_EVENTS = "Get_StudentGateLiveEvents";
+        public static string GET_STUDENT_GATE_HISTORY = "Get_StudentGateHistory";
     }
 }
