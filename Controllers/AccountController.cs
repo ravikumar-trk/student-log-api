@@ -241,21 +241,21 @@ namespace student_log_api.Controllers
         [Route("{accountID}/school/{schoolID}/classes"), HttpGet]
         [SwaggerOperation("Get classes data by account and login user", OperationId = "GetClassesData", Summary = "Get classes data", Description = "Fetch classes data using accountID and loginUserID as query parameters")]
         [SwaggerResponse(statusCode: 200, type: typeof(ClassesDataModel), description: "Classes data fetched successfully")]
-        public async Task<IActionResult> GetClassesData([FromRoute] int accountID, [FromRoute] int schoolID, [FromQuery] int loginUserID)
+        public async Task<IActionResult> GetClassesData([FromRoute] int accountID, [FromRoute] int schoolID, [FromQuery] int IsActive = 1)
         {
-            // if (!UserContext.ValidateUser(
-            // User,
-            // out int loginUserID,
-            // out int loginAccountID,
-            // out string message))
-            // {
-            //     return BadRequest(new
-            //     {
-            //         Message = message,
-            //         StatusCode = 400
-            //     });
-            // }
-            ClassesDataModel response = await _accountInterface.GetClassesData(accountID, schoolID, loginUserID);
+            if (!UserContext.ValidateUser(
+            User,
+            out int loginUserID,
+            out int loginAccountID,
+            out string message))
+            {
+                return BadRequest(new
+                {
+                    Message = message,
+                    StatusCode = 400
+                });
+            }
+            ClassesDataModel response = await _accountInterface.GetClassesData(accountID, schoolID, loginUserID, IsActive);
 
             if (response != null)
             {

@@ -193,7 +193,7 @@ namespace student_log_api.Services
             return response;
         }
 
-        public async Task<ClassesDataModel> GetClassesData(int accountID, int schoolID, int loginUserID)
+        public async Task<ClassesDataModel> GetClassesData(int accountID, int schoolID, int loginUserID, int IsActive)
         {
             ClassesDataModel response = new();
             try
@@ -207,6 +207,7 @@ namespace student_log_api.Services
                 {
                     {"AccountID",accountID},
                     {"SchoolID",schoolID},
+                    {"IsActive",IsActive}
                     // {"LoginUserID",loginUserID}
                 };
                 DBFactory factory = new DBFactory();

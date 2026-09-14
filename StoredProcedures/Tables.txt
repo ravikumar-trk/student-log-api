@@ -1,0 +1,489 @@
+USE [StudentLogs]
+GO
+/****** Object:  Table [dbo].[DailyWork]    Script Date: 9/13/2026 12:06:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[DailyWork](
+	[WorkID] [int] IDENTITY(1,1) NOT NULL,
+	[AccountID] [int] NOT NULL,
+	[SchoolID] [int] NOT NULL,
+	[TeacherID] [int] NOT NULL,
+	[ClassID] [int] NOT NULL,
+	[SectionID] [int] NULL,
+	[SubjectID] [int] NOT NULL,
+	[WorkType] [nvarchar](30) NOT NULL,
+	[Title] [nvarchar](200) NOT NULL,
+	[Description] [nvarchar](max) NOT NULL,
+	[WorkDate] [date] NOT NULL,
+	[Status] [nvarchar](30) NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedDate] [datetime2](0) NOT NULL,
+	[ModifiedBy] [int] NULL,
+	[ModifiedDate] [datetime2](0) NULL,
+ CONSTRAINT [PK_DailyWork] PRIMARY KEY CLUSTERED 
+(
+	[WorkID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GEN_Account]    Script Date: 9/13/2026 12:06:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GEN_Account](
+	[AccountID] [int] IDENTITY(1,1) NOT NULL,
+	[AccountName] [nvarchar](50) NOT NULL,
+	[AccountCode] [nvarchar](50) NOT NULL,
+	[PlanCode] [nvarchar](10) NULL,
+	[Email] [nvarchar](100) NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_GEN_Account_AccountID] PRIMARY KEY CLUSTERED 
+(
+	[AccountID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [UC_GEN_Account_AccountCode] UNIQUE NONCLUSTERED 
+(
+	[AccountCode] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [UC_GEN_Account_AccountName] UNIQUE NONCLUSTERED 
+(
+	[AccountName] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GEN_Schools]    Script Date: 9/13/2026 12:06:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GEN_Schools](
+	[SchoolID] [int] IDENTITY(1,1) NOT NULL,
+	[SchoolName] [nvarchar](50) NOT NULL,
+	[SchoolCode] [nvarchar](50) NOT NULL,
+	[AccountID] [int] NOT NULL,
+	[ZipCode] [nvarchar](50) NULL,
+	[City] [nvarchar](50) NULL,
+	[State] [nvarchar](50) NULL,
+	[Country] [nvarchar](50) NULL,
+	[Address1] [nvarchar](50) NULL,
+	[Address2] [nvarchar](50) NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_GEN_Schools_SchoolID] PRIMARY KEY CLUSTERED 
+(
+	[SchoolID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GEN_Students]    Script Date: 9/13/2026 12:06:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GEN_Students](
+	[StudentID] [int] IDENTITY(1,1) NOT NULL,
+	[FirstName] [nvarchar](50) NULL,
+	[MiddleName] [nvarchar](50) NULL,
+	[LastName] [nvarchar](50) NULL,
+	[AccountID] [int] NOT NULL,
+	[SchoolID] [int] NOT NULL,
+	[ClassID] [int] NOT NULL,
+	[SectionID] [int] NULL,
+	[AdmissionNo] [nvarchar](50) NOT NULL,
+	[RollNo] [nvarchar](50) NOT NULL,
+	[Gender] [bit] NULL,
+	[DOB] [nvarchar](50) NOT NULL,
+	[FatherName] [nvarchar](50) NOT NULL,
+	[MotherName] [nvarchar](50) NULL,
+	[Contact1] [nvarchar](50) NOT NULL,
+	[Contact2] [nvarchar](50) NULL,
+	[AddressLine1] [nvarchar](50) NOT NULL,
+	[AddressLine2] [nvarchar](50) NULL,
+	[City] [nvarchar](50) NOT NULL,
+	[State] [nvarchar](50) NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_GEN_Students_StudentID] PRIMARY KEY CLUSTERED 
+(
+	[StudentID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GEN_TicketComments]    Script Date: 9/13/2026 12:06:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GEN_TicketComments](
+	[CommentID] [int] IDENTITY(1,1) NOT NULL,
+	[TicketID] [int] NOT NULL,
+	[CommentText] [varchar](max) NOT NULL,
+	[CommentBy] [int] NOT NULL,
+	[CommentOn] [datetime] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[CommentID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GEN_Tickets]    Script Date: 9/13/2026 12:06:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GEN_Tickets](
+	[TicketID] [int] IDENTITY(1,1) NOT NULL,
+	[TicketName] [varchar](100) NOT NULL,
+	[IssueType] [varchar](100) NOT NULL,
+	[Description] [varchar](max) NULL,
+	[Priority] [varchar](20) NOT NULL,
+	[AccountID] [int] NOT NULL,
+	[SchoolID] [int] NOT NULL,
+	[FileName] [varchar](max) NULL,
+	[Status] [varchar](20) NOT NULL,
+	[AssignedTo] [int] NULL,
+	[AssignedOn] [datetime] NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedBy] [int] NULL,
+	[UpdatedOn] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[TicketID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GEN_TicketStatusHistory]    Script Date: 9/13/2026 12:06:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GEN_TicketStatusHistory](
+	[HistoryID] [int] IDENTITY(1,1) NOT NULL,
+	[TicketID] [int] NOT NULL,
+	[OldStatus] [varchar](20) NULL,
+	[NewStatus] [varchar](20) NOT NULL,
+	[ChangedBy] [int] NOT NULL,
+	[ChangedOn] [datetime] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[HistoryID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[GEN_Users]    Script Date: 9/13/2026 12:06:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GEN_Users](
+	[UserID] [int] IDENTITY(1,1) NOT NULL,
+	[UserName] [nvarchar](50) NOT NULL,
+	[AccountID] [int] NOT NULL,
+	[UserTypeID] [int] NOT NULL,
+	[Email] [nvarchar](50) NOT NULL,
+	[Password] [varchar](250) NULL,
+	[SchoolIDs] [nvarchar](50) NULL,
+	[SchoolNames] [nvarchar](50) NULL,
+	[Mobile] [nvarchar](50) NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_GEN_Users_UserID] PRIMARY KEY CLUSTERED 
+(
+	[UserID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [UC_GEN_Users_EMail] UNIQUE NONCLUSTERED 
+(
+	[Email] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+UNIQUE NONCLUSTERED 
+(
+	[Email] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[MST_Classes]    Script Date: 9/13/2026 12:06:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[MST_Classes](
+	[ClassID] [int] IDENTITY(1,1) NOT NULL,
+	[ClassName] [nvarchar](50) NOT NULL,
+	[ClassCode] [nvarchar](100) NOT NULL,
+	[ParentID] [int] NULL,
+	[ChildID] [int] NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_MST_Classes_ClassID] PRIMARY KEY CLUSTERED 
+(
+	[ClassID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [UC_MST_Classes_ClassCode] UNIQUE NONCLUSTERED 
+(
+	[ClassCode] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[MST_Holidays]    Script Date: 9/13/2026 12:06:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[MST_Holidays](
+	[HolidayID] [int] IDENTITY(1,1) NOT NULL,
+	[HolidayName] [nvarchar](50) NOT NULL,
+	[HolidayDesc] [nvarchar](100) NOT NULL,
+	[HolidayDate] [datetime] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+	[Status] [bit] NOT NULL,
+ CONSTRAINT [PK_MST_Holidays_HolidayID] PRIMARY KEY CLUSTERED 
+(
+	[HolidayID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [UC_MST_Holidays_HolidayName] UNIQUE NONCLUSTERED 
+(
+	[HolidayName] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+UNIQUE NONCLUSTERED 
+(
+	[HolidayName] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[MST_UserTypes]    Script Date: 9/13/2026 12:06:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[MST_UserTypes](
+	[UserTypeID] [int] IDENTITY(1,1) NOT NULL,
+	[UserType] [nvarchar](50) NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_MST_UserTypes_UserTypeID] PRIMARY KEY CLUSTERED 
+(
+	[UserTypeID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [UC_GEN_Account_UserType] UNIQUE NONCLUSTERED 
+(
+	[UserType] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Subjects]    Script Date: 9/13/2026 12:06:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Subjects](
+	[SubjectID] [int] IDENTITY(1,1) NOT NULL,
+	[AccountID] [int] NOT NULL,
+	[SchoolID] [int] NOT NULL,
+	[SubjectName] [nvarchar](100) NOT NULL,
+	[SubjectCode] [nvarchar](30) NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedDate] [datetime2](0) NOT NULL,
+	[ModifiedBy] [int] NULL,
+	[ModifiedDate] [datetime2](0) NULL,
+ CONSTRAINT [PK_Subjects] PRIMARY KEY CLUSTERED 
+(
+	[SubjectID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [UQ_Subjects_School_Name] UNIQUE NONCLUSTERED 
+(
+	[AccountID] ASC,
+	[SchoolID] ASC,
+	[SubjectName] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TNS_Classes]    Script Date: 9/13/2026 12:06:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TNS_Classes](
+	[TNSClassID] [int] IDENTITY(1,1) NOT NULL,
+	[ClassID] [int] NOT NULL,
+	[AccountID] [int] NOT NULL,
+	[SchoolID] [int] NOT NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedBy] [int] NULL,
+	[UpdatedOn] [datetime] NULL,
+	[IsActive] [bit] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[TNSClassID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TNS_Holidays]    Script Date: 9/13/2026 12:06:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TNS_Holidays](
+	[TransactionHolidayID] [int] IDENTITY(1,1) NOT NULL,
+	[AccountID] [int] NULL,
+	[SchoolID] [int] NULL,
+	[HolidayID] [int] NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedBy] [int] NOT NULL,
+	[UpdatedOn] [datetime] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_TNS_Holidays_TransactionHolidayID] PRIMARY KEY CLUSTERED 
+(
+	[TransactionHolidayID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TNS_Student_Attendance_InOut]    Script Date: 9/13/2026 12:06:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TNS_Student_Attendance_InOut](
+	[AttendanceID] [int] IDENTITY(1,1) NOT NULL,
+	[SchoolID] [int] NOT NULL,
+	[ClassID] [int] NOT NULL,
+	[StudentID] [int] NOT NULL,
+	[InTime] [datetime] NULL,
+	[OutTime] [datetime] NULL,
+	[InOut] [int] NULL,
+	[Hours] [time](7) NULL,
+	[CreatedBy] [int] NOT NULL,
+	[CreatedOn] [datetime] NOT NULL,
+	[UpdatedBy] [int] NULL,
+	[UpdatedOn] [datetime] NULL,
+	[IsActive] [int] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[AttendanceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[DailyWork] ADD  CONSTRAINT [DF_DailyWork_Status]  DEFAULT ('Active') FOR [Status]
+GO
+ALTER TABLE [dbo].[DailyWork] ADD  CONSTRAINT [DF_DailyWork_CreatedDate]  DEFAULT (sysutcdatetime()) FOR [CreatedDate]
+GO
+ALTER TABLE [dbo].[GEN_TicketComments] ADD  DEFAULT (getdate()) FOR [CommentOn]
+GO
+ALTER TABLE [dbo].[GEN_Tickets] ADD  DEFAULT ('Open') FOR [Status]
+GO
+ALTER TABLE [dbo].[GEN_Tickets] ADD  DEFAULT (getdate()) FOR [CreatedOn]
+GO
+ALTER TABLE [dbo].[GEN_TicketStatusHistory] ADD  DEFAULT (getdate()) FOR [ChangedOn]
+GO
+ALTER TABLE [dbo].[Subjects] ADD  CONSTRAINT [DF_Subjects_IsActive]  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [dbo].[Subjects] ADD  CONSTRAINT [DF_Subjects_CreatedDate]  DEFAULT (sysutcdatetime()) FOR [CreatedDate]
+GO
+ALTER TABLE [dbo].[TNS_Classes] ADD  DEFAULT (getdate()) FOR [CreatedOn]
+GO
+ALTER TABLE [dbo].[TNS_Classes] ADD  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [dbo].[GEN_Schools]  WITH CHECK ADD  CONSTRAINT [FK_GEN_Schools_AccountID] FOREIGN KEY([AccountID])
+REFERENCES [dbo].[GEN_Account] ([AccountID])
+GO
+ALTER TABLE [dbo].[GEN_Schools] CHECK CONSTRAINT [FK_GEN_Schools_AccountID]
+GO
+ALTER TABLE [dbo].[GEN_Schools]  WITH CHECK ADD  CONSTRAINT [FK_GEN_Schools_CreatedBy] FOREIGN KEY([CreatedBy])
+REFERENCES [dbo].[GEN_Users] ([UserID])
+GO
+ALTER TABLE [dbo].[GEN_Schools] CHECK CONSTRAINT [FK_GEN_Schools_CreatedBy]
+GO
+ALTER TABLE [dbo].[GEN_Schools]  WITH CHECK ADD  CONSTRAINT [FK_GEN_Schools_UpdatedBy] FOREIGN KEY([UpdatedBy])
+REFERENCES [dbo].[GEN_Users] ([UserID])
+GO
+ALTER TABLE [dbo].[GEN_Schools] CHECK CONSTRAINT [FK_GEN_Schools_UpdatedBy]
+GO
+ALTER TABLE [dbo].[GEN_TicketComments]  WITH CHECK ADD  CONSTRAINT [FK_TicketComments_Tickets] FOREIGN KEY([TicketID])
+REFERENCES [dbo].[GEN_Tickets] ([TicketID])
+GO
+ALTER TABLE [dbo].[GEN_TicketComments] CHECK CONSTRAINT [FK_TicketComments_Tickets]
+GO
+ALTER TABLE [dbo].[GEN_TicketStatusHistory]  WITH CHECK ADD  CONSTRAINT [FK_TicketHistory_Tickets] FOREIGN KEY([TicketID])
+REFERENCES [dbo].[GEN_Tickets] ([TicketID])
+GO
+ALTER TABLE [dbo].[GEN_TicketStatusHistory] CHECK CONSTRAINT [FK_TicketHistory_Tickets]
+GO
+ALTER TABLE [dbo].[GEN_Users]  WITH CHECK ADD  CONSTRAINT [FK_GEN_Users_UserTypeID] FOREIGN KEY([UserTypeID])
+REFERENCES [dbo].[MST_UserTypes] ([UserTypeID])
+GO
+ALTER TABLE [dbo].[GEN_Users] CHECK CONSTRAINT [FK_GEN_Users_UserTypeID]
+GO
+ALTER TABLE [dbo].[MST_Classes]  WITH CHECK ADD  CONSTRAINT [FK_MST_Classes_CreatedBy] FOREIGN KEY([CreatedBy])
+REFERENCES [dbo].[GEN_Users] ([UserID])
+GO
+ALTER TABLE [dbo].[MST_Classes] CHECK CONSTRAINT [FK_MST_Classes_CreatedBy]
+GO
+ALTER TABLE [dbo].[MST_Classes]  WITH CHECK ADD  CONSTRAINT [FK_MST_Classes_UpdatedBy] FOREIGN KEY([UpdatedBy])
+REFERENCES [dbo].[GEN_Users] ([UserID])
+GO
+ALTER TABLE [dbo].[MST_Classes] CHECK CONSTRAINT [FK_MST_Classes_UpdatedBy]
+GO
+ALTER TABLE [dbo].[MST_Holidays]  WITH CHECK ADD  CONSTRAINT [FK_MST_Holidays_CreatedBy] FOREIGN KEY([CreatedBy])
+REFERENCES [dbo].[GEN_Users] ([UserID])
+GO
+ALTER TABLE [dbo].[MST_Holidays] CHECK CONSTRAINT [FK_MST_Holidays_CreatedBy]
+GO
+ALTER TABLE [dbo].[MST_Holidays]  WITH CHECK ADD  CONSTRAINT [FK_MST_Holidays_UpdatedBy] FOREIGN KEY([UpdatedBy])
+REFERENCES [dbo].[GEN_Users] ([UserID])
+GO
+ALTER TABLE [dbo].[MST_Holidays] CHECK CONSTRAINT [FK_MST_Holidays_UpdatedBy]
+GO
+ALTER TABLE [dbo].[TNS_Holidays]  WITH CHECK ADD  CONSTRAINT [FK_TNS_Holidays_AccountID] FOREIGN KEY([AccountID])
+REFERENCES [dbo].[GEN_Account] ([AccountID])
+GO
+ALTER TABLE [dbo].[TNS_Holidays] CHECK CONSTRAINT [FK_TNS_Holidays_AccountID]
+GO
+ALTER TABLE [dbo].[TNS_Holidays]  WITH CHECK ADD  CONSTRAINT [FK_TNS_Holidays_CreatedBy] FOREIGN KEY([CreatedBy])
+REFERENCES [dbo].[GEN_Users] ([UserID])
+GO
+ALTER TABLE [dbo].[TNS_Holidays] CHECK CONSTRAINT [FK_TNS_Holidays_CreatedBy]
+GO
+ALTER TABLE [dbo].[TNS_Holidays]  WITH CHECK ADD  CONSTRAINT [FK_TNS_Holidays_SchoolID] FOREIGN KEY([SchoolID])
+REFERENCES [dbo].[GEN_Schools] ([SchoolID])
+GO
+ALTER TABLE [dbo].[TNS_Holidays] CHECK CONSTRAINT [FK_TNS_Holidays_SchoolID]
+GO
+ALTER TABLE [dbo].[TNS_Holidays]  WITH CHECK ADD  CONSTRAINT [FK_TNS_Holidays_TransactionHolidayID] FOREIGN KEY([HolidayID])
+REFERENCES [dbo].[MST_Holidays] ([HolidayID])
+GO
+ALTER TABLE [dbo].[TNS_Holidays] CHECK CONSTRAINT [FK_TNS_Holidays_TransactionHolidayID]
+GO
+ALTER TABLE [dbo].[TNS_Holidays]  WITH CHECK ADD  CONSTRAINT [FK_TNS_Holidays_UpdatedBy] FOREIGN KEY([UpdatedBy])
+REFERENCES [dbo].[GEN_Users] ([UserID])
+GO
+ALTER TABLE [dbo].[TNS_Holidays] CHECK CONSTRAINT [FK_TNS_Holidays_UpdatedBy]
+GO

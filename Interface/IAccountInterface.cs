@@ -9,7 +9,7 @@ namespace student_log_api.Interface
         Task<AccountDataModel> GetAccountDetails(int accountID);
         Task<SchoolsDataModel> GetSchoolsByAccountID(int accountID, int IsActive);
         Task<UsersDataModel> GetUsersByAccountID(int accountID, int IsActive);
-        Task<ClassesDataModel> GetClassesData(int accountID, int schoolID, int loginUserID);
+        Task<ClassesDataModel> GetClassesData(int accountID, int schoolID, int loginUserID, int IsActive);
         Task<ServiceResponse> UpsertClasses(UpsertClassesModel obj);
         Task<ServiceResponse> AddSchool(AddSchoolModelPayload school, int loginAccountID, int loginUserID);
         Task<ServiceResponse> UpdateSchool(UpdateSchoolModelPayload school, int loginAccountID, int loginUserID);

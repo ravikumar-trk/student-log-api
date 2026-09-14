@@ -1,0 +1,154 @@
+USE [StudentLogs]
+GO
+/****** Object:  StoredProcedure [dbo].[Assign_DailyWork]    Script Date: 9/12/2026 11:44:33 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER PROCEDURE [dbo].[Assign_DailyWork]
+    @WorkID INT,
+    @AccountID INT,
+    @TeacherID INT,
+    @SchoolID INT,
+    @ClassID INT,
+    @SectionID INT,
+    @SubjectID INT,
+    @WorkType NVARCHAR(30),
+    @Title NVARCHAR(200),
+    @Description NVARCHAR(MAX),
+    @WorkDate DATE,
+    @LoginUserID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET XACT_ABORT ON;
+
+    BEGIN TRY
+
+        BEGIN TRANSACTION;
+
+        /* =========================================================
+           1. Validate Teacher
+           ========================================================= */
+
+        IF NOT EXISTS
+        (
+            SELECT 1
+            FROM GEN_Users
+            WHERE UserID = @TeacherID
+              AND AccountID = @AccountID
+              AND (
+                    ',' + ISNULL(SchoolIDs, '') + ','
+                  ) LIKE '%,' + CONVERT(VARCHAR(20), @SchoolID) + ',%'
+        )
+        BEGIN
+            THROW 51003, 'Teacher is not authorized for this school.', 1;
+        END;
+
+
+        /* =========================================================
+           2. Create / Update Daily Work
+           ========================================================= */
+
+        IF @WorkID = 0
+        BEGIN
+
+            INSERT INTO DailyWork
+            (
+                AccountID,
+                SchoolID,
+                TeacherID,
+                ClassID,
+                SectionID,
+                SubjectID,
+                WorkType,
+                Title,
+                Description,
+                WorkDate,
+                CreatedBy
+            )
+            VALUES
+            (
+                @AccountID,
+                @SchoolID,
+                @TeacherID,
+                @ClassID,
+                @SectionID,
+                @SubjectID,
+                @WorkType,
+                @Title,
+                @Description,
+                @WorkDate,
+                @LoginUserID
+            );
+
+            SET @WorkID = CONVERT(INT, SCOPE_IDENTITY());
+
+        END
+        ELSE
+        BEGIN
+
+            /* Validate existing work */
+
+            IF NOT EXISTS
+            (
+                SELECT 1
+                FROM DailyWork
+                WHERE WorkID = @WorkID
+                  AND AccountID = @AccountID
+                  AND TeacherID = @TeacherID
+            )
+            BEGIN
+                THROW 51004, 'Daily work was not found or teacher is not authorized.', 1;
+            END;
+
+
+            UPDATE DailyWork
+            SET
+                SchoolID = @SchoolID,
+                ClassID = @ClassID,
+                SectionID = @SectionID,
+                SubjectID = @SubjectID,
+                WorkType = @WorkType,
+                Title = @Title,
+                Description = @Description,
+                WorkDate = @WorkDate,
+                ModifiedBy = @LoginUserID,
+                ModifiedDate = SYSUTCDATETIME()
+            WHERE WorkID = @WorkID
+              AND AccountID = @AccountID
+              AND TeacherID = @TeacherID;
+
+        END;
+
+        /* =========================================================
+           3. Commit Transaction
+           ========================================================= */
+
+        COMMIT TRANSACTION;
+
+
+          /* =========================================================
+              4. Success Response
+              ========================================================= */
+
+        SELECT
+            1 AS Type,
+            'Success' AS Message,
+            @WorkID AS WorkID;
+
+    END TRY
+
+    BEGIN CATCH
+
+        IF XACT_STATE() <> 0
+        BEGIN
+            ROLLBACK TRANSACTION;
+        END;
+
+        THROW;
+
+    END CATCH;
+
+END;

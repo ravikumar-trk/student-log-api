@@ -1,0 +1,38 @@
+USE [StudentLogs]
+GO
+/****** Object:  StoredProcedure Get_StudentDailyWork    Script Date: 9/12/2026 11:21:20 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER PROCEDURE Get_StudentDailyWork
+    @AccountID INT,
+    @SchoolID INT,
+    @ClassID INT,
+    @WorkDate DATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        W.*,
+        SUBJ.SubjectName,
+        U.UserName AS TeacherName
+    FROM DailyWork AS W
+    
+    INNER JOIN Subjects AS SUBJ
+        ON SUBJ.SubjectID = W.SubjectID
+
+    LEFT JOIN GEN_Users AS U
+        ON U.UserID = W.TeacherID
+
+    WHERE W.AccountID = @AccountID
+      AND W.SchoolID = @SchoolID
+      AND W.ClassID = @ClassID
+      AND W.WorkDate = @WorkDate
+
+    ORDER BY
+        W.WorkDate;
+
+END;

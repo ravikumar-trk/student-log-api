@@ -36,10 +36,5 @@
         public static string GET_TEACHER_DAILY_WORK = "Get_TeacherDailyWork";
         public static string GET_STUDENT_DAILY_WORK = "Get_StudentDailyWork";
         public static string GET_DAILY_WORK_DETAILS = "Get_DailyWorkDetails";
-        public static string GET_DAILY_WORK_STUDENTS = "Get_DailyWorkStudents";
-        public static string SUBMIT_STUDENT_WORK = "Submit_StudentWork";
-        public static string GET_DAILY_WORK_SUBMISSIONS = "Get_DailyWorkSubmissions";
-        public static string REVIEW_STUDENT_WORK = "Review_StudentWork";
-        public static string RETURN_STUDENT_WORK = "Return_StudentWork";
     }
 }
